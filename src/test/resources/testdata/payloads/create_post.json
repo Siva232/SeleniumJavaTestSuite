@@ -1,0 +1,5 @@
+{
+  "userId": ${api.post.create.userId},
+  "title": "${api.post.create.title}",
+  "body": "${api.post.create.body}"
+}

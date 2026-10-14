@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.demoproject</groupId>
+    <artifactId>DemoProject</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+    <name>DemoProject</name>
+    <description>Web UI (Selenium + Cucumber), REST API (Rest Assured) and MySQL test automation framework</description>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Dependency versions -->
+        <selenium.version>4.51.0</selenium.version>
+        <cucumber.version>7.34.9</cucumber.version>
+        <testng.version>7.12.0</testng.version>
+        <rest-assured.version>5.5.7</rest-assured.version>
+        <jackson.version>2.22.3</jackson.version>
+        <extentreports.version>5.1.2</extentreports.version>
+        <mysql-connector.version>9.7.0</mysql-connector.version>
+
+        <!-- Plugin versions -->
+        <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+        <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+
+        <!-- Runtime overrides (blank = use config.properties). Pass with -Dname=value -->
+        <suiteXmlFile>testng.xml</suiteXmlFile>
+        <env></env>
+        <browser></browser>
+        <headless></headless>
+        <parallel.thread.count></parallel.thread.count>
+        <rerun.count></rerun.count>
+        <screenshot.mode></screenshot.mode>
+        <video.recording></video.recording>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <version>${selenium.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-java</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.cucumber</groupId>
+            <artifactId>cucumber-testng</artifactId>
+            <version>${cucumber.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aventstack</groupId>
+            <artifactId>extentreports</artifactId>
+            <version>${extentreports.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>${mysql-connector.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <release>${maven.compiler.release}</release>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <!-- Explicit framework overrides; blank values are ignored by ConfigReader.
+                         Any other -Dkey=value (e.g. -Dcucumber.filter.tags, -Dapp.url, test data keys)
+                         is forwarded to the forked JVM automatically as a Maven user property. -->
+                    <systemPropertyVariables>
+                        <env>${env}</env>
+                        <browser>${browser}</browser>
+                        <headless>${headless}</headless>
+                        <parallel.thread.count>${parallel.thread.count}</parallel.thread.count>
+                        <rerun.count>${rerun.count}</rerun.count>
+                        <screenshot.mode>${screenshot.mode}</screenshot.mode>
+                        <video.recording>${video.recording}</video.recording>
+                        <java.awt.headless>true</java.awt.headless>
+                    </systemPropertyVariables>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,0 +1,17 @@
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--
+  Scenarios run in parallel through TestRunner's @DataProvider(parallel = true).
+  The data-provider thread count is NOT set here: ParallelSuiteConfigurer injects
+  parallel.thread.count from config.properties (or -Dparallel.thread.count) at runtime.
+-->
+<suite name="DemoProject Suite" verbose="1">
+    <listeners>
+        <listener class-name="com.demoproject.listeners.ParallelSuiteConfigurer"/>
+        <listener class-name="com.demoproject.listeners.RetryTransformer"/>
+    </listeners>
+    <test name="Cucumber Scenarios">
+        <classes>
+            <class name="com.demoproject.runners.TestRunner"/>
+        </classes>
+    </test>
+</suite>

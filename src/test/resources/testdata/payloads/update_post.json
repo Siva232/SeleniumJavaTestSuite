@@ -1,0 +1,6 @@
+{
+  "id": ${api.post.existing.id},
+  "userId": ${api.post.existing.userId},
+  "title": "${api.post.update.title}",
+  "body": "${api.post.update.body}"
+}
