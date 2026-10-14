@@ -27,12 +27,12 @@ import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
- * Records one browser session as an animated GIF using only the JDK.
+ * Records one browser session as a Motion-JPEG AVI using only the JDK.
  * <p>
  * A single-thread {@link ScheduledExecutorService} captures {@link TakesScreenshot} frames of the
  * given driver, waiting {@code intervalMs} between captures, downscales them to {@code maxWidth} and streams them to a
- * temporary folder as PNGs (file names carry the capture time so GIF frame delays match real time).
- * {@link #stop(Path)} stitches them into a GIF or discards them. Capture errors (e.g. an alert is
+ * temporary folder as PNGs (file names carry the capture time so the video timeline matches real time).
+ * {@link #stop(Path)} encodes them into an AVI or discards them. Capture errors (e.g. an alert is
  * open or a window is closing) are logged and never propagate to the test.
  */
 public class VideoRecorder {
@@ -80,11 +80,11 @@ public class VideoRecorder {
     }
 
     /**
-     * Stops capturing. If {@code target} is non-null and frames exist, writes the GIF there.
+     * Stops capturing. If {@code target} is non-null and frames exist, writes the AVI there.
      * Temp frames are always deleted.
      *
-     * @param target GIF file to create, or null to discard the recording
-     * @return true if a GIF was written
+     * @param target AVI file to create, or null to discard the recording
+     * @return true if an AVI was written
      */
     public boolean stop(Path target) {
         try {
@@ -92,7 +92,7 @@ public class VideoRecorder {
             if (target == null || frameCount.get() == 0) {
                 return false;
             }
-            GifWriter.write(collectFrames(), target);
+            AviWriter.write(collectFrames(), target, intervalMs);
             LOG.info(() -> "Recording saved: " + target.getFileName() + " (" + frameCount.get() + " frames)");
             return true;
         } catch (IOException | RuntimeException e) {
@@ -122,17 +122,17 @@ public class VideoRecorder {
         }
     }
 
-    private List<GifWriter.Frame> collectFrames() throws IOException {
+    private List<AviWriter.Frame> collectFrames() throws IOException {
         List<Path> files;
         try (Stream<Path> stream = Files.list(framesDir)) {
             files = stream.filter(p -> p.getFileName().toString().endsWith(".png")).sorted().toList();
         }
-        List<GifWriter.Frame> frames = new ArrayList<>(files.size());
+        List<AviWriter.Frame> frames = new ArrayList<>(files.size());
         for (int i = 0; i < files.size(); i++) {
             long delay = i + 1 < files.size()
                     ? captureTime(files.get(i + 1)) - captureTime(files.get(i))
                     : intervalMs;
-            frames.add(new GifWriter.Frame(files.get(i), delay > 0 ? delay : intervalMs));
+            frames.add(new AviWriter.Frame(files.get(i), delay > 0 ? delay : intervalMs));
         }
         return frames;
     }

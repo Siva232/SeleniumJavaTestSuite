@@ -9,6 +9,7 @@ import com.demoproject.core.FrameworkBootstrap;
 import com.demoproject.db.DbUtils;
 import com.demoproject.driver.DriverManager;
 import com.demoproject.reporting.ExtentTestManager;
+import com.demoproject.reporting.HtmlEscaper;
 import com.demoproject.reporting.ReportContext;
 import com.demoproject.reporting.ScenarioAttemptTracker;
 import com.demoproject.utils.ScreenshotUtils;
@@ -92,9 +93,11 @@ public class Hooks {
             }
         } finally {
             try {
-                VideoRecorderManager.stop(scenario.getName(), scenario.isFailed()).ifPresent(gif ->
-                        ExtentTestManager.currentTest().ifPresent(test -> test.info("Scenario recording",
-                                MediaEntityBuilder.createScreenCaptureFromPath(gif, "Scenario recording").build())));
+                // Browsers cannot play AVI inline, so the report links to the file instead of embedding it.
+                VideoRecorderManager.stop(scenario.getName(), scenario.isFailed()).ifPresent(avi ->
+                        ExtentTestManager.currentTest().ifPresent(test -> test.info(
+                                "Scenario recording: <a href=\"" + HtmlEscaper.escape(avi) + "\" target=\"_blank\">"
+                                        + HtmlEscaper.escape(avi.substring(avi.lastIndexOf('/') + 1)) + "</a>")));
             } finally {
                 DriverManager.quitDriver();
                 FAILURE_SCREENSHOT_TAKEN.remove();

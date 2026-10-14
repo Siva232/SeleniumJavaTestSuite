@@ -115,7 +115,7 @@ Each run creates `reports/Run_<yyyyMMdd_HHmmss>/`:
 reports/Run_20261014_151649/
 ├── index.html        Extent Spark report (system info: env, browser, OS, Java, threads)
 ├── screenshots/      PNGs per screenshot.mode (also attached to the Cucumber report)
-├── videos/           animated GIF per scenario per video.recording (embedded in the report)
+├── videos/           Motion-JPEG AVI per scenario per video.recording (linked from the report)
 └── logs/execution.log
 ```
 
@@ -126,7 +126,7 @@ are written to `target/cucumber-reports/`.
   scenario once, with its final result. Earlier attempts are removed, and the surviving entry notes
   the retry number and the previous failure.
 * **Video**: each UI scenario's own browser is recorded on a background thread, one recorder per
-  scenario thread. Frames go to a temp folder and are stitched into a GIF. Recordings that don't
+  scenario thread. Frames go to a temp folder and are encoded into an AVI. Recordings that don't
   match `video.recording` are deleted. API/DB scenarios are never recorded, and recording problems
   are logged as warnings without failing the test.
 
@@ -180,7 +180,7 @@ DemoProject
     │   │                 ScreenshotUtils, FileHelper
     │   ├── reporting     ExtentManager, ExtentTestManager, ExtentCucumberListener,
     │   │                 ReportContext, ReportHistoryCleaner, ScenarioAttemptTracker, HtmlEscaper
-    │   ├── video         VideoRecorder, VideoRecorderManager, GifWriter
+    │   ├── video         VideoRecorder, VideoRecorderManager, AviWriter
     │   ├── testdata      TestDataReader, PayloadReader
     │   ├── logging       LoggingConfigurator, LogFormatter
     │   └── exceptions    FrameworkException
@@ -220,7 +220,7 @@ DemoProject
 | Unexpected alerts | `unhandledPromptBehavior=IGNORE` | Stops a background video screenshot from silently dismissing an alert the test is checking |
 | Video capture rate | Fixed *delay* between frames (not fixed rate) | Screenshots can take longer than the interval; back-to-back captures would delay the test's own WebDriver commands |
 | Short-lived messages | `BasePage.watchTransientText()` records banner text in the browser (MutationObserver) | The login error banner is visible for only about 2 s; polling over WebDriver can miss it under parallel load |
-| GIF looping | No NETSCAPE loop extension, so it plays once | "Loop once" requirement; reload the image to replay |
+| Recording format | Motion-JPEG AVI written with the JDK only (no new dependency), linked from the report | Browsers cannot play AVI inline, so the report links to the file; it opens in the OS video player |
 | Secrets | Decrypted on access, not at startup | Suites that don't need a secret (e.g. API only) run without `DEMO_SECRET_KEY` |
 | Report retries | Previous attempt's node removed via `ExtentReports.removeTest` | Final result shown once with retry notes. TestNG/Cucumber's own reports still list each attempt (TestNG marks retried attempts as skipped) |
 | Cucumber version | 7.x (not 8.x) | As specified |

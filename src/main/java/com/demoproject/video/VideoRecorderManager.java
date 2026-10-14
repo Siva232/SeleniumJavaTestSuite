@@ -42,12 +42,12 @@ public final class VideoRecorderManager {
     }
 
     /**
-     * Stops the current thread's recorder; keeps the GIF only if the outcome matches the mode.
+     * Stops the current thread's recorder; keeps the AVI only if the outcome matches the mode.
      * Must be called before the browser is quit.
      *
      * @param scenarioName   used for the file name
      * @param scenarioFailed scenario outcome
-     * @return path of the GIF relative to the report's index.html, if one was kept
+     * @return path of the AVI relative to the report's index.html, if one was kept
      */
     public static Optional<String> stop(String scenarioName, boolean scenarioFailed) {
         VideoRecorder recorder = RECORDER.get();
@@ -60,7 +60,7 @@ public final class VideoRecorderManager {
             ReportContext context = ReportContext.getInstance();
             Path target = keep
                     ? context.getVideosDir().resolve(FileHelper.sanitize(scenarioName) + "_"
-                    + FileHelper.fileTimestamp() + ".gif")
+                    + FileHelper.fileTimestamp() + ".avi")
                     : null;
             return recorder.stop(target) ? Optional.of(context.relativeToRunDir(target)) : Optional.empty();
         } catch (Exception e) {
